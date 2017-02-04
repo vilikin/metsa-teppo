@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
+import { LocationTracker } from '../providers/location-tracker';
 
 import { Page1 } from '../pages/page1/page1';
 import { Page2 } from '../pages/page2/page2';
@@ -16,7 +17,7 @@ export class MyApp {
 
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform) {
+  constructor(public platform: Platform, private locationTracker: LocationTracker) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -29,6 +30,7 @@ export class MyApp {
 
   initializeApp() {
     this.platform.ready().then(() => {
+      this.locationTracker.startTracking();
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       StatusBar.styleDefault();

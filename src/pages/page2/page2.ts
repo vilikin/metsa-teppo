@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { NavController, NavParams } from 'ionic-angular';
+import {MapPage} from "../mappage/map";
 
 @Component({
   selector: 'page-page2',
@@ -31,8 +32,6 @@ export class Page2 {
 
   itemTapped(event, item) {
     // That's right, we're pushing to ourselves!
-    this.navCtrl.push(Page2, {
-      item: item
-    });
+    this.navCtrl.push(MapPage);
   }
 }
