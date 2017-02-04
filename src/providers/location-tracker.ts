@@ -64,27 +64,23 @@ export class LocationTracker {
       enableHighAccuracy: true
     };
 
-    this.watch = Geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
+    this.watch = setInterval(() => {
+      Geolocation.getCurrentPosition({ enableHighAccuracy: true })
+        .then(position => {
+          this.lat = position.coords.latitude;
+          this.lng = position.coords.longitude;
 
-      console.log(position);
-
-      // Run update inside of Angular's zone
-      this.zone.run(() => {
-        this.lat = position.coords.latitude;
-        this.lng = position.coords.longitude;
-
-        this.positions.push({lat : this.lat,
-          lng: this.lng});
-      });
-
-    });
+          this.positions.push({lat : this.lat,
+            lng: this.lng});
+        });
+    }, 15000);
   }
 
   stopTracking() {
     console.log('stopTracking');
 
-    BackgroundGeolocation.finish();
-    this.watch.unsubscribe();
+    BackgroundGeolocation.stop();
+    clearInterval(this.watch);
 
     this.positions = [];
   }

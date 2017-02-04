@@ -4,7 +4,9 @@ import { NavController, Platform } from 'ionic-angular';
 
 import { LocationTracker } from '../../providers/location-tracker';
 
-import {GoogleMap, GoogleMapsEvent, GoogleMapsLatLng, GoogleMapsPolyline} from 'ionic-native';
+import { Geolocation } from 'ionic-native';
+
+import { GoogleMap, GoogleMapsEvent, GoogleMapsLatLng, GoogleMapsPolyline } from 'ionic-native';
 
 @Component({
   selector: 'map-page',
@@ -22,54 +24,56 @@ export class MapPage {
     });
   }
 
-  loadMap(){
+  loadMap() {
 
-    let location = new GoogleMapsLatLng(this.locationTracker.lat, this.locationTracker.lng);
+    Geolocation.getCurrentPosition().then((position) => {
+      let location = new GoogleMapsLatLng(position.coords.latitude, position.coords.longitude);
 
-    this.map = new GoogleMap('map', {
-      'backgroundColor': 'white',
-      'controls': {
-        'compass': true,
-        'myLocationButton': true,
-        'indoorPicker': true,
-        'zoom': true
-      },
-      'gestures': {
-        'scroll': true,
-        'tilt': true,
-        'rotate': true,
-        'zoom': true
-      },
-      'camera': {
-        'latLng': location,
-        'tilt': 30,
-        'zoom': 15,
-        'bearing': 50
-      }
-    });
-
-    this.map.on(GoogleMapsEvent.MAP_READY).subscribe(() => {
-      console.log('Map is ready!');
-
-      var mapPoints: GoogleMapsLatLng[] = [];
-
-      this.locationTracker.positions.forEach(pos => {
-        mapPoints.push(new GoogleMapsLatLng(pos.lat, pos.lng));
+      this.map = new GoogleMap('map', {
+        'backgroundColor': 'white',
+        'controls': {
+          'compass': true,
+          'myLocationButton': true,
+          'indoorPicker': true,
+          'zoom': true
+        },
+        'gestures': {
+          'scroll': true,
+          'tilt': true,
+          'rotate': true,
+          'zoom': true
+        },
+        'camera': {
+          'latLng': location,
+          'tilt': 30,
+          'zoom': 15,
+          'bearing': 50
+        }
       });
 
-      this.map.addPolyline({
-        points: mapPoints,
-        'color' : '#AA00FF',
-        'width': 10,
-        'geodesic': true
-      }).then(line => {
-        this.polyLine = line;
-      });
+      this.map.on(GoogleMapsEvent.MAP_READY).subscribe(() => {
+        console.log('Map is ready!');
 
-      setInterval(() => {
-        this.refreshMap();
-      }, 5000);
-    });
+        var mapPoints: GoogleMapsLatLng[] = [];
+
+        this.locationTracker.positions.forEach(pos => {
+          mapPoints.push(new GoogleMapsLatLng(pos.lat, pos.lng));
+        });
+
+        this.map.addPolyline({
+          points: mapPoints,
+          'color' : '#AA00FF',
+          'width': 10,
+          'geodesic': true
+        }).then(line => {
+          this.polyLine = line;
+        });
+
+        setInterval(() => {
+          this.refreshMap();
+        }, 5000);
+      });
+    })
   }
 
   refreshMap() {
