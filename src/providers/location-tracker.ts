@@ -10,13 +10,19 @@ import 'rxjs/add/operator/filter';
   See https://angular.io/docs/ts/latest/guide/dependency-injection.html
   for more info on providers and Angular 2 DI.
 */
+
+export interface Location {
+  lat: number;
+  lng: number;
+}
+
 @Injectable()
 export class LocationTracker {
 
   public watch: any;
   public lat: number = 0;
   public lng: number = 0;
-  public positions = [];
+  public positions: Location[] = [];
 
   constructor(public zone: NgZone) {
 
@@ -25,10 +31,10 @@ export class LocationTracker {
   startTracking() {
     let config = {
       desiredAccuracy: 0,
-      stationaryRadius: 0,
-      distanceFilter: 0,
+      stationaryRadius: 20,
+      distanceFilter: 30,
       debug: false,
-      interval: 2000
+      interval: 15000
     };
 
     BackgroundGeolocation.configure((location) => {
@@ -40,7 +46,8 @@ export class LocationTracker {
         this.lat = location.latitude;
         this.lng = location.longitude;
 
-        this.positions.push(location.latitude);
+        this.positions.push({lat : this.lat,
+        lng: this.lng});
       });
     }, (err) => {
       console.log(err);
@@ -53,7 +60,7 @@ export class LocationTracker {
     // Foreground Tracking
 
     let options = {
-      frequency: 3000,
+      maximumAge: 15000,
       enableHighAccuracy: true
     };
 
@@ -65,6 +72,9 @@ export class LocationTracker {
       this.zone.run(() => {
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
+
+        this.positions.push({lat : this.lat,
+          lng: this.lng});
       });
 
     });
@@ -75,6 +85,8 @@ export class LocationTracker {
 
     BackgroundGeolocation.finish();
     this.watch.unsubscribe();
+
+    this.positions = [];
   }
 
 }

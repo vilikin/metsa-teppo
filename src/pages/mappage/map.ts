@@ -4,7 +4,7 @@ import { NavController, Platform } from 'ionic-angular';
 
 import { LocationTracker } from '../../providers/location-tracker';
 
-import { GoogleMap, GoogleMapsEvent, GoogleMapsLatLng } from 'ionic-native';
+import {GoogleMap, GoogleMapsEvent, GoogleMapsLatLng, GoogleMapsPolyline} from 'ionic-native';
 
 @Component({
   selector: 'map-page',
@@ -13,6 +13,8 @@ import { GoogleMap, GoogleMapsEvent, GoogleMapsLatLng } from 'ionic-native';
 export class MapPage {
 
   map: GoogleMap;
+
+  polyLine: GoogleMapsPolyline;
 
   constructor(public navCtrl: NavController, public platform: Platform, private locationTracker: LocationTracker) {
     platform.ready().then(() => {
@@ -48,8 +50,36 @@ export class MapPage {
 
     this.map.on(GoogleMapsEvent.MAP_READY).subscribe(() => {
       console.log('Map is ready!');
+
+      var mapPoints: GoogleMapsLatLng[] = [];
+
+      this.locationTracker.positions.forEach(pos => {
+        mapPoints.push(new GoogleMapsLatLng(pos.lat, pos.lng));
+      });
+
+      this.map.addPolyline({
+        points: mapPoints,
+        'color' : '#AA00FF',
+        'width': 10,
+        'geodesic': true
+      }).then(line => {
+        this.polyLine = line;
+      });
+
+      setInterval(() => {
+        this.refreshMap();
+      }, 5000);
+    });
+  }
+
+  refreshMap() {
+    var mapPoints: GoogleMapsLatLng[] = [];
+
+    this.locationTracker.positions.forEach(pos => {
+      mapPoints.push(new GoogleMapsLatLng(pos.lat, pos.lng));
     });
 
+    this.polyLine.setPoints(mapPoints);
   }
 
 }

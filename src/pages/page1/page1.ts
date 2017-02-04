@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 
-import { NavController } from 'ionic-angular';
+import {NavController, Nav} from 'ionic-angular';
+
+import { MapPage } from '../mappage/map';
 
 import { LocationTracker } from '../../providers/location-tracker';
 
@@ -12,6 +14,10 @@ export class Page1 {
 
   constructor(public navCtrl: NavController, public locationTracker: LocationTracker) {
 
+  }
+
+  openMap() {
+    this.navCtrl.push(MapPage);
   }
 
 }

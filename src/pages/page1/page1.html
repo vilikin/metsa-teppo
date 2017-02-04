@@ -9,8 +9,9 @@
 
 <ion-content padding>
   <div *ngFor="let position of locationTracker.positions">
-    {{position}}
+    {{position.lat}} : {{position.lng}}
   </div>
-
-  <button ion-button secondary menuToggle>Toggle Menu</button>
+  <button ion-button (click)="locationTracker.startTracking()">Start</button>
+  <button ion-button (click)="locationTracker.stopTracking()">Stop</button>
+  <button ion-button (click)="openMap()">Open Map</button>
 </ion-content>
