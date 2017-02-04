@@ -60,14 +60,14 @@ export class MapPage {
           mapPoints.push(new GoogleMapsLatLng(pos.lat, pos.lng));
         });
 
-        this.map.addPolyline({
-          points: mapPoints,
-          'color' : '#AA00FF',
-          'width': 10,
-          'geodesic': true
-        }).then(line => {
-          this.polyLine = line;
-        });
+      this.map.addPolyline({
+        points: mapPoints,
+        'color' : '#006400',
+        'width': 10,
+        'geodesic': true
+      }).then(line => {
+        this.polyLine = line;
+      });
 
         setInterval(() => {
           this.refreshMap();

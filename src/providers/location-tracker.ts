@@ -2,7 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 
 import { Geolocation, Geoposition, BackgroundGeolocation } from 'ionic-native';
 import 'rxjs/add/operator/filter';
-
+import { RoutesService } from './routes-service';
 
 /*
   Generated class for the LocationTracker provider.
@@ -23,9 +23,14 @@ export class LocationTracker {
   public lat: number = 0;
   public lng: number = 0;
   public positions: Location[] = [];
+  public routes = [];
 
-  constructor(public zone: NgZone) {
-
+  constructor(public zone: NgZone, public routesService: RoutesService) {
+    if (!localStorage.getItem('routes')) {
+      localStorage.setItem('routes', '[]');
+    } else {
+      this.routes = JSON.parse(localStorage.getItem('routes'));
+    }
   }
 
   startTracking() {
@@ -46,8 +51,10 @@ export class LocationTracker {
         this.lat = location.latitude;
         this.lng = location.longitude;
 
-        this.positions.push({lat : this.lat,
-        lng: this.lng});
+        this.positions.push({
+          lat: this.lat,
+          lng: this.lng
+        });
       });
     }, (err) => {
       console.log(err);
@@ -56,7 +63,6 @@ export class LocationTracker {
     // Turn ON the background-geolocation system.
     BackgroundGeolocation.start();
 
-
     // Foreground Tracking
 
     let options = {
@@ -64,25 +70,35 @@ export class LocationTracker {
       enableHighAccuracy: true
     };
 
-    this.watch = setInterval(() => {
-      Geolocation.getCurrentPosition({ enableHighAccuracy: true })
-        .then(position => {
-          this.lat = position.coords.latitude;
-          this.lng = position.coords.longitude;
+    if (!this.watch || this.watch.runCount < 0) {
+      this.watch = setInterval(() => {
+        console.log("minä se olen");
+        Geolocation.getCurrentPosition({enableHighAccuracy: true})
+          .then(position => {
+            this.lat = position.coords.latitude;
+            this.lng = position.coords.longitude;
 
-          this.positions.push({lat : this.lat,
-            lng: this.lng});
-        });
-    }, 15000);
+            this.positions.push({
+              lat: this.lat,
+              lng: this.lng
+            });
+          });
+      }, 15000);
+    }
   }
 
   stopTracking() {
     console.log('stopTracking');
+    let route = {
+      positions: this.positions,
+      name: "Hieno metsä"
+    };
+    this.routesService.saveRoute(route);
 
     BackgroundGeolocation.stop();
+    console.log(this.watch);
     clearInterval(this.watch);
-
+    console.log(this.watch);
     this.positions = [];
   }
-
 }

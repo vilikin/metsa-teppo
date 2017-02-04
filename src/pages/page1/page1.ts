@@ -20,4 +20,7 @@ export class Page1 {
     this.navCtrl.push(MapPage);
   }
 
+  saveRoute() {
+
+  }
 }
