@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 
-import { Geolocation, Geoposition, BackgroundGeolocation } from 'ionic-native';
+import { Geolocation, BackgroundGeolocation, GoogleMap } from 'ionic-native';
 import 'rxjs/add/operator/filter';
 import { RoutesService } from './routes-service';
 

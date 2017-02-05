@@ -12,4 +12,21 @@
     {{position.lat}} : {{position.lng}}
   </div>
   <button ion-button (click)="startRoute()">Open Map</button>
+
+  <ion-card class="adv-map" *ngFor="let route of routesService.getRoutes()">
+    <div style="position: relative">
+      <img height="200px" [src]="mapUrl(route.positions)">
+    </div>
+    <ion-item>
+      <h2>{{route.name}}</h2>
+    </ion-item>
+    <ion-item actions>
+      <span ion-text item-left color="subtle">{{routeLength(route.positions) | number: '1.2-2'}} km</span>
+      <button ion-button color="primary" clear item-right icon-left>
+        <ion-icon name='navigate'></ion-icon>
+        Start
+      </button>
+    </ion-item>
+
+  </ion-card>
 </ion-content>

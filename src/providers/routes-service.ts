@@ -4,7 +4,6 @@ import 'rxjs/add/operator/map';
 
 /*
   Generated class for the RoutesService provider.
-
   See https://angular.io/docs/ts/latest/guide/dependency-injection.html
   for more info on providers and Angular 2 DI.
 */
@@ -23,7 +22,6 @@ export class RoutesService {
     route.id = Math.ceil(Math.random() * 10000000);
     routes.push(route);
     localStorage.setItem('routes', JSON.stringify(routes));
-    console.log(JSON.parse(localStorage.getItem('routes')));
   }
 
   getRoutes() {

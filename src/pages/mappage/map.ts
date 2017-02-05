@@ -110,7 +110,7 @@ export class MapPage {
       this.map.addPolyline({
         points: mapPoints,
         'color' : '#006400',
-        'width': 10,
+        'width': 7,
         'geodesic': true
       }).then(line => {
         console.log("setting polyline");
