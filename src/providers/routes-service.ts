@@ -13,7 +13,9 @@ import 'rxjs/add/operator/map';
 export class RoutesService {
 
   constructor(public http: Http) {
-    console.log('Hello RoutesService Provider');
+    if (!localStorage.getItem('routes')) {
+      localStorage.setItem('routes', '[]');
+    }
   }
 
   saveRoute(route) {

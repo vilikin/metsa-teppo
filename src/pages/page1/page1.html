@@ -11,7 +11,5 @@
   <div *ngFor="let position of locationTracker.positions">
     {{position.lat}} : {{position.lng}}
   </div>
-  <button ion-button (click)="locationTracker.startTracking()">Start</button>
-  <button ion-button (click)="locationTracker.stopTracking()">Stop</button>
-  <button ion-button (click)="openMap()">Open Map</button>
+  <button ion-button (click)="startRoute()">Open Map</button>
 </ion-content>

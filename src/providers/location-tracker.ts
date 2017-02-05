@@ -22,18 +22,15 @@ export class LocationTracker {
   public watch: any;
   public lat: number = 0;
   public lng: number = 0;
-  public positions: Location[] = [];
-  public routes = [];
+  public positions: Location[];
 
   constructor(public zone: NgZone, public routesService: RoutesService) {
-    if (!localStorage.getItem('routes')) {
-      localStorage.setItem('routes', '[]');
-    } else {
-      this.routes = JSON.parse(localStorage.getItem('routes'));
-    }
+
   }
 
   startTracking() {
+    this.positions = [];
+
     let config = {
       desiredAccuracy: 0,
       stationaryRadius: 20,
@@ -88,17 +85,7 @@ export class LocationTracker {
   }
 
   stopTracking() {
-    console.log('stopTracking');
-    let route = {
-      positions: this.positions,
-      name: "Hieno metsä"
-    };
-    this.routesService.saveRoute(route);
-
     BackgroundGeolocation.stop();
-    console.log(this.watch);
     clearInterval(this.watch);
-    console.log(this.watch);
-    this.positions = [];
   }
 }

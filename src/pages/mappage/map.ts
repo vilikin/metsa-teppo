@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
 
-import { NavController, Platform } from 'ionic-angular';
+import {NavController, Platform, LoadingController } from 'ionic-angular';
 
 import { LocationTracker } from '../../providers/location-tracker';
 
 import { Geolocation } from 'ionic-native';
 
 import { GoogleMap, GoogleMapsEvent, GoogleMapsLatLng, GoogleMapsPolyline } from 'ionic-native';
+import { RoutesService } from "../../providers/routes-service";
+
+import { AlertController } from 'ionic-angular';
 
 @Component({
   selector: 'map-page',
@@ -17,15 +20,49 @@ export class MapPage {
   map: GoogleMap;
 
   polyLine: GoogleMapsPolyline;
+  loading: boolean;
 
-  constructor(public navCtrl: NavController, public platform: Platform, private locationTracker: LocationTracker) {
+  constructor(public navCtrl: NavController, public platform: Platform, private locationTracker: LocationTracker,
+              public routesService: RoutesService, public alertCtrl: AlertController,
+              public loadingCtrl: LoadingController) {
+    this.loading = true;
+
     platform.ready().then(() => {
       this.loadMap();
+      this.locationTracker.startTracking();
     });
   }
 
-  loadMap() {
+  endRoute() {
+    this.navCtrl.pop();
+    this.locationTracker.stopTracking();
+    let prompt = this.alertCtrl.create({
+      title: 'Tallenna reitti',
+      inputs: [
+        {
+          name: 'Reitin nimi',
+          placeholder: 'Kirjoita reitille nimi'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Poista'
+        },
+        {
+          text: 'Tallenna',
+          handler: data => {
+            this.routesService.saveRoute({
+              positions: this.locationTracker.positions,
+              name: data
+            });
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
 
+  loadMap() {
     Geolocation.getCurrentPosition().then((position) => {
       let location = new GoogleMapsLatLng(position.coords.latitude, position.coords.longitude);
 
@@ -52,38 +89,36 @@ export class MapPage {
       });
 
       this.map.on(GoogleMapsEvent.MAP_READY).subscribe(() => {
-        console.log('Map is ready!');
-
-        var mapPoints: GoogleMapsLatLng[] = [];
-
-        this.locationTracker.positions.forEach(pos => {
-          mapPoints.push(new GoogleMapsLatLng(pos.lat, pos.lng));
+        this.loading = false;
+        setInterval(() => {
+            this.refreshMap();
+          }, 2000);
         });
+    });
+  }
 
+  refreshMap() {
+    let mapPoints: GoogleMapsLatLng[] = [];
+
+    this.locationTracker.positions.forEach(pos => {
+      mapPoints.push(new GoogleMapsLatLng(pos.lat, pos.lng));
+    });
+
+    if (this.polyLine) {
+      this.polyLine.setPoints(mapPoints);
+    } else if (mapPoints.length > 1) {
       this.map.addPolyline({
         points: mapPoints,
         'color' : '#006400',
         'width': 10,
         'geodesic': true
       }).then(line => {
+        console.log("setting polyline");
         this.polyLine = line;
       });
-
-        setInterval(() => {
-          this.refreshMap();
-        }, 5000);
-      });
-    })
+    }
   }
 
-  refreshMap() {
-    var mapPoints: GoogleMapsLatLng[] = [];
 
-    this.locationTracker.positions.forEach(pos => {
-      mapPoints.push(new GoogleMapsLatLng(pos.lat, pos.lng));
-    });
-
-    this.polyLine.setPoints(mapPoints);
-  }
 
 }

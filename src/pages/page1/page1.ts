@@ -16,11 +16,7 @@ export class Page1 {
 
   }
 
-  openMap() {
+  startRoute() {
     this.navCtrl.push(MapPage);
-  }
-
-  saveRoute() {
-
   }
 }
