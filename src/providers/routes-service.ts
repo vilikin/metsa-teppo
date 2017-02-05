@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
 
+import { Observable } from 'rxjs/Rx';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
 /*
   Generated class for the RoutesService provider.
   See https://angular.io/docs/ts/latest/guide/dependency-injection.html
@@ -17,18 +19,32 @@ export class RoutesService {
     }
   }
 
+  private routesUrl = 'http://localhost:8080/routes';
+
   saveRoute(route) {
-    let routes = JSON.parse(localStorage.getItem('routes'));
-    route.id = Math.ceil(Math.random() * 10000000);
-    routes.push(route);
-    localStorage.setItem('routes', JSON.stringify(routes));
+    let routeString = JSON.stringify(route);
+    let headers = new Headers({'Content-Type': 'application/json'});
+    let options = new RequestOptions({headers: headers});
+
+    return this.http.post(this.routesUrl, routeString, options)
+      .map((res:Response) => res.json())
+      .catch((error:any) => Observable.throw(error.json().error || 'Error saving route'));
+
+   // let routes = JSON.parse(localStorage.getItem('routes'));
+    //route.id = Math.ceil(Math.random() * 10000000);
+   // routes.push(route);
+    //localStorage.setItem('routes', JSON.stringify(routes));
   }
 
   getRoutes() {
-    return JSON.parse(localStorage.getItem('routes'));
+    return this.http.get(this.routesUrl)
+      .map((res:Response) => res.json())
+      .catch((error:any) => Observable.throw(error.json().error || 'Error getting routes'));
+
+    //return JSON.parse(localStorage.getItem('routes'));
   }
 
-  getRoute(id) {
+ /* getRoute(id) {
     let routes = JSON.parse(localStorage.getItem('routes'));
     routes.forEach((route) => {
       if (route.id === id) {
@@ -45,5 +61,5 @@ export class RoutesService {
         localStorage.setItem('routes', routes);
       }
     })
-  }
+  }*/
  }

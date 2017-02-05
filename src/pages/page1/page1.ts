@@ -54,8 +54,4 @@ export class Page1 {
   degreeToRadius(degree) {
     return degree * (Math.PI / 180);
   }
-
-  saveRoute() {
-
-  }
 }
