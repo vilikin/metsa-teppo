@@ -1,14 +1,9 @@
 import { Component } from '@angular/core';
-
-import {NavController, Platform, LoadingController } from 'ionic-angular';
-
+import { NavController, Platform, LoadingController } from 'ionic-angular';
 import { LocationTracker } from '../../providers/location-tracker';
-
 import { Geolocation } from 'ionic-native';
-
 import { GoogleMap, GoogleMapsEvent, GoogleMapsLatLng, GoogleMapsPolyline } from 'ionic-native';
 import { RoutesService } from "../../providers/routes-service";
-
 import { AlertController } from 'ionic-angular';
 
 @Component({
@@ -40,7 +35,7 @@ export class MapPage {
       title: 'Tallenna reitti',
       inputs: [
         {
-          name: 'Reitin nimi',
+          name: 'Nimi',
           placeholder: 'Kirjoita reitille nimi'
         },
       ],
@@ -51,15 +46,42 @@ export class MapPage {
         {
           text: 'Tallenna',
           handler: data => {
+            console.log(data);
             this.routesService.saveRoute({
               positions: this.locationTracker.positions,
-              name: data
+              name: data.Nimi,
+              length: this.routeLength(this.locationTracker.positions)
             });
           }
         }
       ]
     });
     prompt.present();
+  }
+
+  routeLength(positions) {
+    let distance = 0;
+    let radius = 6371; // earth's radius
+    positions.forEach((position, index) => {
+      if (index + 1 < positions.length) {
+        let dlat = this.degreeToRadius(position.lat - positions[index + 1].lat);
+        let dlng = this.degreeToRadius(position.lng - positions[index + 1].lng);
+        let a = Math.sin(dlat / 2) * Math.sin(dlat / 2) +
+          Math.cos(this.degreeToRadius(position.lat)) *
+          Math.cos(this.degreeToRadius(positions[index + 1].lat)) *
+          Math.sin(dlng / 2) * Math.sin(dlng / 2);
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        let d = radius * c; // Distance in km
+        distance += d;
+        console.log(d);
+      }
+    });
+
+    return distance;
+  }
+
+  degreeToRadius(degree) {
+    return degree * (Math.PI / 180);
   }
 
   loadMap() {

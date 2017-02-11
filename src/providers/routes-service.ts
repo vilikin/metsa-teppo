@@ -19,16 +19,24 @@ export class RoutesService {
     }
   }
 
-  private routesUrl = 'http://localhost:8080/routes';
+  private routesUrl = 'http://139.59.132.42/routes';
 
   saveRoute(route) {
     let routeString = JSON.stringify(route);
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
 
-    return this.http.post(this.routesUrl, routeString, options)
-      .map((res:Response) => res.json())
-      .catch((error:any) => Observable.throw(error.json().error || 'Error saving route'));
+    console.log(routeString);
+    this.http.post(this.routesUrl, route, options)
+      .map(res => res.json())
+      .subscribe(
+        data => {
+          console.log(data);
+        },
+        err => {
+          console.log(err);
+        }
+      );
 
    // let routes = JSON.parse(localStorage.getItem('routes'));
     //route.id = Math.ceil(Math.random() * 10000000);
