@@ -69,7 +69,6 @@ export class LocationTracker {
 
     if (!this.watch || this.watch.runCount < 0) {
       this.watch = setInterval(() => {
-        console.log("minä se olen");
         Geolocation.getCurrentPosition({enableHighAccuracy: true})
           .then(position => {
             this.lat = position.coords.latitude;

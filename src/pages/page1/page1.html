@@ -22,7 +22,7 @@
     </ion-item>
     <ion-item actions>
       <span ion-text item-left color="subtle">{{route.length | number: '1.2-2'}} km</span>
-      <button ion-button color="primary" clear item-right icon-left>
+      <button ion-button color="primary" clear item-right icon-left (click)="openRoute(route._id)">
         <ion-icon name='navigate'></ion-icon>
         Start
       </button>

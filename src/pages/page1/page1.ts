@@ -25,6 +25,13 @@ export class Page1 {
       })
   }
 
+  openRoute(id) {
+    this.routesService.getRoute(id).subscribe(data => {
+      console.log(id);
+      console.log(data);
+    })
+  }
+
   mapUrl(positions) {
     let url = "https://maps.googleapis.com/maps/api/staticmap?key=AIzaSyBoqzcCl_xiw-lpGEmIPfp09V7wmxp9gTY&size=400x400&path=color:0x006400FF|weight:5";
     positions.forEach(position => {

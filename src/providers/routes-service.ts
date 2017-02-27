@@ -13,20 +13,14 @@ import 'rxjs/add/operator/catch';
 @Injectable()
 export class RoutesService {
 
-  constructor(public http: Http) {
-    if (!localStorage.getItem('routes')) {
-      localStorage.setItem('routes', '[]');
-    }
-  }
+  constructor(public http: Http) {}
 
   private routesUrl = 'http://139.59.132.42/routes';
 
   saveRoute(route) {
-    let routeString = JSON.stringify(route);
     let headers = new Headers({'Content-Type': 'application/json'});
     let options = new RequestOptions({headers: headers});
 
-    console.log(routeString);
     this.http.post(this.routesUrl, route, options)
       .map(res => res.json())
       .subscribe(
@@ -37,30 +31,32 @@ export class RoutesService {
           console.log(err);
         }
       );
-
-   // let routes = JSON.parse(localStorage.getItem('routes'));
-    //route.id = Math.ceil(Math.random() * 10000000);
-   // routes.push(route);
-    //localStorage.setItem('routes', JSON.stringify(routes));
   }
 
   getRoutes() {
     return this.http.get(this.routesUrl)
       .map((res:Response) => res.json())
       .catch((error:any) => Observable.throw(error.json().error || 'Error getting routes'));
-
-    //return JSON.parse(localStorage.getItem('routes'));
   }
 
- /* getRoute(id) {
+  getRoute(id) {
+    let route = this.routesUrl + "/" + id;
+      return this.http.get(route)
+        .map((res: Response) => res.json())
+        .catch((error:any) => Observable.throw(error.json().error || "Error getting route"));
+  }
+
+
+    /*
     let routes = JSON.parse(localStorage.getItem('routes'));
     routes.forEach((route) => {
       if (route.id === id) {
         return route;
       }
     })
-  }
+  }*/
 
+/*
   deleteRoute(id) {
     let routes = JSON.parse(localStorage.getItem('routes'));
     routes.forEach((route, index) => {
