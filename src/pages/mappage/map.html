@@ -1,9 +1,10 @@
 <ion-header>
-  <ion-navbar hideBackButton="true">
+  <ion-navbar color="primary" hideBackButton="true">
     <ion-title>{{ loading ? "Ladataan karttaa..." : "Reittisi" }}</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only color="royal" (click)="endRoute()">
+      <button ion-button icon-left color="royal" (click)="endRoute()">
         <ion-icon name="checkmark"></ion-icon>
+        Valmista
       </button>
     </ion-buttons>
   </ion-navbar>

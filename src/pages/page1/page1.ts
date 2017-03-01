@@ -16,6 +16,8 @@ export class Page1 {
   constructor(public navCtrl: NavController, public routesService: RoutesService, public locationTracker: LocationTracker) {
     this.routes = [];
     this.getRoutes();
+
+    RoutesService.refreshRoutes.subscribe((event) => this.getRoutes());
   }
 
   getRoutes() {

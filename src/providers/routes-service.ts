@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, EventEmitter} from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 
 import { Observable } from 'rxjs/Rx';
@@ -12,8 +12,9 @@ import 'rxjs/add/operator/catch';
 
 @Injectable()
 export class RoutesService {
-
-  constructor(public http: Http) {}
+  public static refreshRoutes: EventEmitter<string> = new EventEmitter<string>();
+  constructor(public http: Http ) {
+  }
 
   private routesUrl = 'http://139.59.132.42/routes';
 
@@ -26,6 +27,7 @@ export class RoutesService {
       .subscribe(
         data => {
           console.log(data);
+          RoutesService.refreshRoutes.emit("refresh");
         },
         err => {
           console.log(err);

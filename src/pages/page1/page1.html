@@ -1,18 +1,16 @@
 <ion-header>
-  <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>Page One</ion-title>
+  <ion-navbar color="primary">
+    <ion-title>Reitit</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-left color="royal" (click)="startRoute()">
+        <ion-icon name="checkmark"></ion-icon>
+        Aloita reitti
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <div *ngFor="let position of locationTracker.positions">
-    {{position.lat}} : {{position.lng}}
-  </div>
-  <button ion-button (click)="startRoute()">Open Map</button>
-
+<ion-content>
   <ion-card class="adv-map" *ngFor="let route of routes">
     <div style="position: relative">
       <img height="200px" [src]="mapUrl(route.positions)">
@@ -24,7 +22,7 @@
       <span ion-text item-left color="subtle">{{route.length | number: '1.2-2'}} km</span>
       <button ion-button color="primary" clear item-right icon-left (click)="openRoute(route._id)">
         <ion-icon name='navigate'></ion-icon>
-        Start
+        Aloita
       </button>
     </ion-item>
 

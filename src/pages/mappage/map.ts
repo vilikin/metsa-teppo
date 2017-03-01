@@ -5,6 +5,8 @@ import { Geolocation } from 'ionic-native';
 import { GoogleMap, GoogleMapsEvent, GoogleMapsLatLng, GoogleMapsPolyline } from 'ionic-native';
 import { RoutesService } from "../../providers/routes-service";
 import { AlertController } from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
+
 
 @Component({
   selector: 'map-page',
@@ -21,7 +23,7 @@ export class MapPage {
 
   constructor(public navCtrl: NavController, public platform: Platform, private locationTracker: LocationTracker,
               public routesService: RoutesService, public alertCtrl: AlertController,
-              public loadingCtrl: LoadingController) {
+              public loadingCtrl: LoadingController, public toastCtrl: ToastController) {
     this.loading = true;
 
     this.backButton = platform.registerBackButtonAction(() => {
@@ -39,32 +41,46 @@ export class MapPage {
 
     this.navCtrl.pop();
     this.locationTracker.stopTracking();
-    let prompt = this.alertCtrl.create({
-      title: 'Tallenna reitti',
-      inputs: [
-        {
-          name: 'Nimi',
-          placeholder: 'Kirjoita reitille nimi'
-        },
-      ],
-      buttons: [
-        {
-          text: 'Poista'
-        },
-        {
-          text: 'Tallenna',
-          handler: data => {
-            console.log(data);
-            this.routesService.saveRoute({
-              positions: this.locationTracker.positions,
-              name: data.Nimi,
-              length: this.routeLength(this.locationTracker.positions)
-            });
+
+    if (this.locationTracker.positions.length >= 5) {
+      let prompt = this.alertCtrl.create({
+        title: 'Tallenna reitti',
+        inputs: [
+          {
+            name: 'Nimi',
+            placeholder: 'Kirjoita reitille nimi'
+          },
+        ],
+        buttons: [
+          {
+            text: 'Poista'
+          },
+          {
+            text: 'Tallenna',
+            handler: data => {
+              this.routesService.saveRoute({
+                positions: this.locationTracker.positions,
+                name: data.Nimi,
+                length: this.routeLength(this.locationTracker.positions)
+              });
+
+              let toast = this.toastCtrl.create({
+                message: 'Tallennetaan reittiä...',
+                duration: 1000
+              });
+              toast.present();
+            }
           }
-        }
-      ]
-    });
-    prompt.present();
+        ]
+      });
+      prompt.present();
+    } else {
+      let toast = this.toastCtrl.create({
+        message: 'Reitti oli liian lyhyt tallennettavaksi.',
+        duration: 3000
+      });
+      toast.present();
+    }
   }
 
   routeLength(positions) {
