@@ -4,6 +4,7 @@ import {NavController, Nav} from 'ionic-angular';
 import {MapPage} from '../mappage/map';
 import {LocationTracker} from '../../providers/location-tracker';
 import {RoutesService} from '../../providers/routes-service';
+import {RouteMapPage} from "../route-map-page/routemap";
 
 @Component({
   selector: 'page-page1',
@@ -31,6 +32,8 @@ export class Page1 {
     this.routesService.getRoute(id).subscribe(data => {
       console.log(id);
       console.log(data);
+
+      this.navCtrl.push(RouteMapPage, data);
     })
   }
 

@@ -6,12 +6,14 @@ import  { MapPage } from '../pages/mappage/map';
 
 import { LocationTracker } from '../providers/location-tracker';
 import { RoutesService } from "../providers/routes-service";
+import {RouteMapPage} from "../pages/route-map-page/routemap";
 
 @NgModule({
   declarations: [
     MyApp,
     Page1,
-    MapPage
+    MapPage,
+    RouteMapPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -20,7 +22,8 @@ import { RoutesService } from "../providers/routes-service";
   entryComponents: [
     MyApp,
     Page1,
-    MapPage
+    MapPage,
+    RouteMapPage
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},

@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-navbar color="primary" hideBackButton="true">
+    <ion-title>{{ loading ? "Ladataan karttaa..." : "Reitti" }}</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-left color="royal" (click)="endRoute()">
+        <ion-icon name="checkmark"></ion-icon>
+        Poistu
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div id="map"></div>
+</ion-content>

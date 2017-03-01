@@ -48,7 +48,6 @@ export class RoutesService {
         .catch((error:any) => Observable.throw(error.json().error || "Error getting route"));
   }
 
-
     /*
     let routes = JSON.parse(localStorage.getItem('routes'));
     routes.forEach((route) => {
