@@ -17,10 +17,16 @@ export class MapPage {
   polyLine: GoogleMapsPolyline;
   loading: boolean;
 
+  backButton: any;
+
   constructor(public navCtrl: NavController, public platform: Platform, private locationTracker: LocationTracker,
               public routesService: RoutesService, public alertCtrl: AlertController,
               public loadingCtrl: LoadingController) {
     this.loading = true;
+
+    this.backButton = platform.registerBackButtonAction(() => {
+      console.log("Back");
+    }, 100);
 
     platform.ready().then(() => {
       this.loadMap();
@@ -29,6 +35,8 @@ export class MapPage {
   }
 
   endRoute() {
+    this.backButton();
+
     this.navCtrl.pop();
     this.locationTracker.stopTracking();
     let prompt = this.alertCtrl.create({
